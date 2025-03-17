@@ -1,40 +1,42 @@
 package com.example.dsabackend.controllers;
 
+import com.example.dsabackend.services.StackService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/stack")
 public class StackController {
 
-    private List<String> stack = new ArrayList<>();
+    private final StackService stackService;
+
+    public StackController(StackService stackService) {
+        this.stackService = stackService;
+    }
 
     @PostMapping("/push")
     public List<String> push(@RequestBody String request) {
-        stack.add(request.substring(0, request.length() - 1)); // Removes the "=" sign at the end
-        return stack;
+        return stackService.push(request);
     }
 
     @PostMapping("/pop")
     public List<String> pop() {
-        if (!stack.isEmpty()) {
-            stack.remove(stack.size() - 1);
-        }
-        return stack;
+        return stackService.pop();
     }
 
     @GetMapping("/peek")
     public String peek() {
-        if (!stack.isEmpty()) {
-            return stack.get(stack.size() - 1);
-        }
-        return "Stack is empty";
+        return stackService.peek();
     }
 
     @GetMapping("/isEmpty")
     public boolean isEmpty() {
-        return stack.isEmpty();
+        return stackService.isEmpty();
+    }
+
+    @PostMapping("/empty")
+    public List<String> empty() {
+        return stackService.empty();
     }
 }
