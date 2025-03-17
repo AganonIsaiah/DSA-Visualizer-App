@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_URL from '../../api/dsa_api';
+import { Link } from 'react-router-dom';
+ 
 
 const Stack = () => {
   const [stack, setStack] = useState([]);
@@ -9,10 +12,10 @@ const Stack = () => {
   const pushElement = async () => {
     if (input !== '') {
       try {
-        const response = await axios.post('http://localhost:8080/api/stack/push', { element: input });
+        const response = await axios.post(`${API_URL}/stack/push`, input);
         setStack(response.data);
         setInput('');
-        setPeekValue(null); // Reset peek display
+        setPeekValue(null); 
       } catch (error) {
         console.error('Error pushing element', error);
       }
@@ -21,9 +24,9 @@ const Stack = () => {
   
   const popElement = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/stack/pop');
+      const response = await axios.post(`${API_URL}/stack/pop`);
       setStack(response.data);
-      setPeekValue(null); // Reset peek display
+      setPeekValue(null); 
     } catch (error) {
       console.error('Error popping element', error);
     }
@@ -31,7 +34,7 @@ const Stack = () => {
 
   const peekElement = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/stack/peek');
+      const response = await axios.get(`${API_URL}/stack/peek`);
       setPeekValue(response.data); 
     } catch (error) {
       console.error('Error peeking element', error);
@@ -55,17 +58,26 @@ const Stack = () => {
         <button onClick={peekElement} className="peek-btn">Peek</button>
       </div>
 
-      {peekValue !== null && (
+      {stack.length <= 0 && (
+        <div>Stack is empty.</div>
+      )}
+
+      {peekValue !== null && stack.length > 0 && (
         <div className="peek-display">Top Element: {peekValue}</div>
       )}
 
       <div className="stack">
-        {stack.map((element, index) => (
+        {stack.toReversed().map((element, index) => (
           <div key={index} className="stack-element">
             {element}
           </div>
         ))}
       </div>
+
+      <div>
+        <Link to="/"><button>Home</button></Link>
+      </div>
+
     </div>
   );
 };

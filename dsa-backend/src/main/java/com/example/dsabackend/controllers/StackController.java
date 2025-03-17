@@ -7,15 +7,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/stack")
-@CrossOrigin(origins = "http://localhost:5173")  // Allow requests from React app
 public class StackController {
 
     private List<String> stack = new ArrayList<>();
 
-    // Updated push endpoint to accept JSON
     @PostMapping("/push")
-    public List<String> push(@RequestBody ElementRequest request) {
-        stack.add(request.getElement());
+    public List<String> push(@RequestBody String request) {
+        stack.add(request.substring(0, request.length() - 1)); // Removes the "=" sign at the end
         return stack;
     }
 
@@ -38,19 +36,5 @@ public class StackController {
     @GetMapping("/isEmpty")
     public boolean isEmpty() {
         return stack.isEmpty();
-    }
-
-    // Define a request body class to accept the element
-    public static class ElementRequest {
-        private String element;
-
-        // Getter and setter for the element
-        public String getElement() {
-            return element;
-        }
-
-        public void setElement(String element) {
-            this.element = element;
-        }
     }
 }
